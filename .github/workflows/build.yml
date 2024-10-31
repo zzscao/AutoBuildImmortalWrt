@@ -19,14 +19,9 @@ jobs:
           --user root \
           -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
           -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
-          -v "${{ github.workspace }}/target:/home/build/immortalwrt/target" \
-          -v "${{ github.workspace }}/Makefile:/home/build/immortalwrt/target/linux/x86/Makefile" \
-          immortalwrt/imagebuilder:x86-64-openwrt-23.05.4 /bin/sh -c " \
-            
-            cp /home/build/immortalwrt/target/linux/x86/Makefile /home/build/immortalwrt/target/linux/x86/Makefile.bak && \
-            cp /home/build/immortalwrt/target/linux/x86/Makefile /home/build/immortalwrt/target/linux/x86/Makefile.custom && \
-            
-            cd /home/build/immortalwrt && ./build.sh"
+          -v "${{ github.workspace }}/Makefile:/home/build/immortalwrt/Makefile.bak" \
+          -v "${{ github.workspace }}/build.sh:/home/build/immortalwrt/build.sh" \
+          immortalwrt/imagebuilder:x86-64-openwrt-23.05.4 /bin/sh /home/build/immortalwrt/build.sh
 
       - name: Locate firmware file
         id: locate_file
@@ -34,7 +29,6 @@ jobs:
           firmware_file=$(find "${{ github.workspace }}/bin" -name '*squashfs-combined-efi.img.gz' | head -n 1)
           echo "Firmware file located at $firmware_file"
           echo "firmware_path=$firmware_file" >> $GITHUB_ENV
-
       - name: Upload firmware
         uses: actions/upload-artifact@v4
         with:
