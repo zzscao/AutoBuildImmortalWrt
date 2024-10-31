@@ -12,7 +12,7 @@ jobs:
 
       - name: Setup Docker and Build
         run: |
-          docker run --rm -it \
+          docker run --rm -i \
           --user root \
           -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
           -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
