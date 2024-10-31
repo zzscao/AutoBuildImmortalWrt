@@ -1,0 +1,22 @@
+name: ImmortalWrt Build
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Docker and Build
+        run: |
+          docker run --rm -it \
+          --user root \
+          -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
+          -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
+          -v "${{ github.workspace }}/build.sh:/home/build/immortalwrt/build.sh" \
+          immortalwrt/imagebuilder:x86-64-openwrt-23.05.4 /home/build/immortalwrt/build.sh
