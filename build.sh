@@ -1,5 +1,5 @@
 #!/bin/bash
-
+cp Makefile.bak target/linux/x86/Makefile
 PACKAGES=""
 PACKAGES="$PACKAGES curl"
 PACKAGES="$PACKAGES luci-i18n-firewall-zh-cn"
