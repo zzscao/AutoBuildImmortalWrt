@@ -27,5 +27,4 @@ jobs:
         with:
           name: firmware
           path: |
-            ./bin/*.bin
-            ./bin/*.img.gz
+            ./build_dir/target-x86_64_musl/linux-x86_64/tmp/*.img.gz
