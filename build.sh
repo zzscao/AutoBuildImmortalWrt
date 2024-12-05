@@ -39,7 +39,7 @@ echo "$(date '+%Y-%m-%d %H:%M:%S') - Building image with the following packages:
 echo "$PACKAGE_LIST"
 
 
-make image PACKAGES="$PACKAGE_LIST" FILES="/home/build/immortalwrt/files" ROOTFS_PARTSIZE="2048"
+make image PROFILE="generic" PACKAGES="$PACKAGE_LIST" FILES="/home/build/immortalwrt/files" ROOTFS_PARTSIZE="2048"
 
 if [ $? -ne 0 ]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Error: Build failed!"
