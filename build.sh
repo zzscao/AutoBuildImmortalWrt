@@ -16,19 +16,12 @@ else
 fi
 
 # 定义所需安装的包列表
-PACKAGES="\
-curl \
-luci-i18n-firewall-zh-cn \
-luci-i18n-filebrowser-zh-cn \
-luci-app-argon-config \
-luci-i18n-argon-config-zh-cn \
-luci-i18n-opkg-zh-cn \
-luci-i18n-ttyd-zh-cn \
-luci-i18n-passwall-zh-cn \
-luci-app-openclash \
-luci-i18n-homeproxy-zh-cn \
-openssh-sftp-server \
-luci-i18n-dockerman-zh-cn"
+PACKAGES="curl luci-i18n-firewall-zh-cn luci-i18n-filebrowser-zh-cn"
+PACKAGES="$PACKAGES luci-app-argon-config luci-i18n-argon-config-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-opkg-zh-cn luci-i18n-ttyd-zh-cn"
+PACKAGES="$PACKAGES luci-i18n-passwall-zh-cn luci-app-openclash"
+PACKAGES="$PACKAGES luci-i18n-homeproxy-zh-cn openssh-sftp-server"
+PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
 
 # 构建镜像
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Building image with the following packages:"
