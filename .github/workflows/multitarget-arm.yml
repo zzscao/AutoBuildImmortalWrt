@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       profile:
-        description: 'Comma-separated list of profiles'
+        description: '手动输入的多个 profile，并按逗号分隔'
         required: true
         default: 'friendlyarm_nanopi-r3s,radxa_zero-3e'
 
@@ -21,7 +21,6 @@ jobs:
 
       - name: Setup Docker and Build
         run: |
-          # 获取手动输入的多个 profile，并按逗号分隔
           profiles="${{ github.event.inputs.profile }}"
           
           # 使用 IFS 将逗号分隔的字符串转换成数组
@@ -43,10 +42,19 @@ jobs:
       - name: Locate squashfs firmware files
         id: locate_files
         run: |
+          # 使用 find 查找文件并将结果存入 firmware_files 变量
           firmware_files=$(find "${{ github.workspace }}/bin" -type f -name '*squashfs*.img.gz')
+
+          # 确保路径使用逗号分隔
+          firmware_files=$(echo "$firmware_files" | tr '\n' ',')
+
+          # 输出找到的文件路径
           echo "Squashfs firmware files located:"
           echo "$firmware_files"
+
+          # 设置为环境变量，确保路径之间用逗号分隔
           echo "firmware_paths=$firmware_files" >> $GITHUB_ENV
+
 
       - name: Upload firmware
         uses: actions/upload-artifact@v4
