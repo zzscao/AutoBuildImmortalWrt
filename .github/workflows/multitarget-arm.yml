@@ -6,7 +6,7 @@ on:
       profile:
         description: 'Comma-separated list of profiles'
         required: true
-        default: 'radxa_zero-3e,friendlyarm_nanopi-r3s'
+        default: 'friendlyarm_nanopi-r3s,friendlyarm_nanopi-r2s'
 
 jobs:
   build:
@@ -21,7 +21,10 @@ jobs:
 
       - name: Setup Docker and Build
         run: |
-          profiles=(${GITHUB_EVENT_INPUTS_PROFILE//,/ })
+          # 解析输入的 PROFILE 参数，将其拆分成数组
+          profiles=(${{ github.event.inputs.profile//,/ }})
+          
+          # 遍历所有的 profile 并传递给 Docker
           for profile in "${profiles[@]}"; do
             echo "Building for profile: $profile"
             
