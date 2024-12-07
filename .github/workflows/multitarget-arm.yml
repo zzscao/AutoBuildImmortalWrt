@@ -6,7 +6,7 @@ on:
       profile:
         description: 'Comma-separated list of profiles'
         required: true
-        default: 'friendlyarm_nanopi-r3s,friendlyarm_nanopi-r2s'
+        default: 'friendlyarm_nanopi-r3s,radxa_zero-3e'
 
 jobs:
   build:
