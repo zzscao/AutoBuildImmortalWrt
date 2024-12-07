@@ -41,15 +41,19 @@ jobs:
         id: locate_files
         run: |
           firmware_files=$(find "${{ github.workspace }}/bin" -type f -name '*squashfs*.img.gz')
-          firmware_files=$(echo "$firmware_files" | tr '\n' ',')
+          firmware_files=$(echo "$firmware_files" | tr '\n' ' ')
           echo "Squashfs firmware files located:"
           echo "$firmware_files"
           echo "firmware_paths=$firmware_files" >> $GITHUB_ENV
+
+      - name: Package firmware files into a tar.gz
+        run: |
+          tar -czf firmware.tar.gz ${{ env.firmware_paths }}
+          echo "Firmware files packaged into firmware.tar.gz"
 
       - name: Upload firmware
         uses: actions/upload-artifact@v4
         with:
           name: firmware
-          path: ${{ env.firmware_paths }}
+          path: firmware.tar.gz
           compression-level: 0
-
