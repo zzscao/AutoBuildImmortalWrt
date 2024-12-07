@@ -26,9 +26,9 @@ jobs:
       - name: Locate firmware file
         id: locate_file
         run: |
-          firmware_file=$(find "${{ github.workspace }}/bin" -name '*squashfs-combined-efi.img.gz' | head -n 1)
-          echo "Firmware file located at $firmware_file"
-          echo "firmware_path=$firmware_file" >> $GITHUB_ENV
+          firmware_file=$(ls "${{ github.workspace }}/bin" | grep 'squashfs' | head -n 1)
+          echo "Firmware file located at ${{ github.workspace }}/bin/$firmware_file"
+          echo "firmware_path=${{ github.workspace }}/bin/$firmware_file" >> $GITHUB_ENV
       - name: Upload firmware
         uses: actions/upload-artifact@v4
         with:
