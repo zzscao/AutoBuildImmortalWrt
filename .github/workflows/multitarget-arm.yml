@@ -21,10 +21,7 @@ jobs:
 
       - name: Setup Docker and Build
         run: |
-          # 解析输入的 PROFILE 参数，将其拆分成数组
           profiles=(${GITHUB_EVENT_INPUTS_PROFILE//,/ })
-
-          # 遍历所有的 profile 并传递给 Docker
           for profile in "${profiles[@]}"; do
             echo "Building for profile: $profile"
             
