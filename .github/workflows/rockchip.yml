@@ -23,13 +23,14 @@ jobs:
           -v "${{ github.workspace }}/build_rockchip.sh:/home/build/immortalwrt/build.sh" \
           immortalwrt/imagebuilder:rockchip-armv8-openwrt-24.10 /bin/sh /home/build/immortalwrt/build.sh
 
-      - name: Locate firmware file
-        id: locate_file
+      - name: Locate all firmware files
+        id: locate_files
         run: |
-          firmware_files=$(ls "${{ github.workspace }}/bin")
+          firmware_files=$(find "${{ github.workspace }}/bin" -type f)
           echo "Firmware files located:"
           echo "$firmware_files"
-          echo "firmware_paths=$(ls "${{ github.workspace }}/bin")" >> $GITHUB_ENV
+          echo "firmware_paths=$firmware_files" >> $GITHUB_ENV
+
       - name: Upload firmware
         uses: actions/upload-artifact@v4
         with:
