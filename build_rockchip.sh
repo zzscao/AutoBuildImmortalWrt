@@ -1,4 +1,7 @@
 #!/bin/bash
+# 获取 PROFILE 环境变量
+echo "Building for profile: $PROFILE"
+
 
 # 输出调试信息
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Starting build process..."
@@ -26,7 +29,7 @@ PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Building image with the following packages:"
 echo "$PACKAGES"
 
-make image PROFILE=friendlyarm_nanopi-r3s PACKAGES="$PACKAGES" FILES="/home/build/immortalwrt/files" ROOTFS_PARTSIZE="2048"
+make image PROFILE=$PROFILE PACKAGES="$PACKAGES" FILES="/home/build/immortalwrt/files" ROOTFS_PARTSIZE="2048"
 
 if [ $? -ne 0 ]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Error: Build failed!"
