@@ -1,0 +1,53 @@
+name: nanopi
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Comma-separated list of profiles'
+        required: true
+        default: 'friendlyarm_nanopi-r1s,friendlyarm_nanopi-r3s'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set executable permissions
+        run: chmod +x build.sh
+
+      - name: Setup Docker and Build
+        run: |
+          # 解析输入的 PROFILE 参数，将其拆分成数组
+          profiles=(${GITHUB_EVENT_INPUTS_PROFILE//,/ })
+
+          # 遍历所有的 profile 并传递给 Docker
+          for profile in "${profiles[@]}"; do
+            echo "Building for profile: $profile"
+            
+            docker run --rm -i \
+              --user root \
+              -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
+              -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
+              -v "${{ github.workspace }}/build_rockchip.sh:/home/build/immortalwrt/build.sh" \
+              -e PROFILE=$profile \
+              immortalwrt/imagebuilder:rockchip-armv8-openwrt-24.10 /bin/bash /home/build/immortalwrt/build.sh
+          done
+
+      - name: Locate squashfs firmware files
+        id: locate_files
+        run: |
+          firmware_files=$(find "${{ github.workspace }}/bin" -type f -name '*squashfs*.img.gz')
+          echo "Squashfs firmware files located:"
+          echo "$firmware_files"
+          echo "firmware_paths=$firmware_files" >> $GITHUB_ENV
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: ${{ env.firmware_paths }}
+          compression-level: 0
