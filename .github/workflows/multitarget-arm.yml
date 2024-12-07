@@ -21,11 +21,14 @@ jobs:
 
       - name: Setup Docker and Build
         run: |
-          # 解析输入的 PROFILE 参数，将其拆分成数组
-          profiles=(${{ github.event.inputs.profile//,/ }})
+          # 获取手动输入的多个 profile，并按逗号分隔
+          profiles="${{ github.event.inputs.profile }}"
+          
+          # 使用 IFS 将逗号分隔的字符串转换成数组
+          IFS=',' read -r -a profile_array <<< "$profiles"
           
           # 遍历所有的 profile 并传递给 Docker
-          for profile in "${profiles[@]}"; do
+          for profile in "${profile_array[@]}"; do
             echo "Building for profile: $profile"
             
             docker run --rm -i \
@@ -51,3 +54,4 @@ jobs:
           name: firmware
           path: ${{ env.firmware_paths }}
           compression-level: 0
+
