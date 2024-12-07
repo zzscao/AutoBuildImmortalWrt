@@ -19,7 +19,6 @@ jobs:
           --user root \
           -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
           -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
-          -v "${{ github.workspace }}/Makefile_rockchip:/home/build/immortalwrt/target/linux/rockchip/Makefile" \
           -v "${{ github.workspace }}/build_rockchip.sh:/home/build/immortalwrt/build.sh" \
           immortalwrt/imagebuilder:rockchip-armv8-openwrt-24.10 /bin/sh /home/build/immortalwrt/build.sh
 
