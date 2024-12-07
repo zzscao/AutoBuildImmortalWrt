@@ -1,4 +1,4 @@
-name: rockship-armv8-squashfs
+name: rockship-armv8-squashfs-23.05.4
 
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ jobs:
           -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
           -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
           -v "${{ github.workspace }}/build_rockchip.sh:/home/build/immortalwrt/build.sh" \
-          immortalwrt/imagebuilder:rockchip-armv8-openwrt-24.10 /bin/sh /home/build/immortalwrt/build.sh
+          immortalwrt/imagebuilder:rockchip-armv8-openwrt-23.05.4 /bin/bash /home/build/immortalwrt/build.sh
 
       - name: Locate squashfs firmware files
         id: locate_files
