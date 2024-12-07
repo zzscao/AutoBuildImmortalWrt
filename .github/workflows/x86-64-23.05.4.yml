@@ -32,7 +32,7 @@ jobs:
               --user root \
               -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
               -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
-              -v "${{ github.workspace }}/build.sh:/home/build/immortalwrt/build.sh" \
+              -v "${{ github.workspace }}/x86-64/build.sh:/home/build/immortalwrt/build.sh" \
               -e PROFILE=$profile \
               immortalwrt/imagebuilder:x86-64-openwrt-23.05.4 /bin/sh /home/build/immortalwrt/build.sh
           done
