@@ -26,14 +26,12 @@ elif [ "$count" -gt 1 ]; then
   uci set network.lan.ipaddr='192.168.100.1'
 fi
 
+# 设置所有网口可访问网页终端
+uci delete ttyd.@ttyd[0].interface
+
 # 设置所有网口可连接 SSH
 uci set dropbear.@dropbear[0].Interface=''
 uci commit
-
-# 设置所有网口可访问网页终端
-uci delete ttyd.@ttyd[0].interface
-uci commit ttyd
-
 
 # 设置编译作者信息
 FILE_PATH="/etc/openwrt_release"
