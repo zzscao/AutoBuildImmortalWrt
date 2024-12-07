@@ -1,4 +1,4 @@
-name: rockship-armv8-squashfs-23.05.4
+name: r3s-24.10
 
 on:
   workflow_dispatch:
