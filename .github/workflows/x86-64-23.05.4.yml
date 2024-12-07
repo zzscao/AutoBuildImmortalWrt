@@ -1,0 +1,59 @@
+name: build-rockchip
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: '手动输入的多个 profile，并按逗号分隔'
+        required: true
+        default: 'generic'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set executable permissions
+        run: chmod +x build.sh
+
+      - name: Setup Docker and Build
+        run: |
+          profiles="${{ github.event.inputs.profile }}"
+          
+          IFS=',' read -r -a profile_array <<< "$profiles"
+          
+          for profile in "${profile_array[@]}"; do
+            echo "Building for profile: $profile"
+            
+            docker run --rm -i \
+              --user root \
+              -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
+              -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
+              -v "${{ github.workspace }}/build.sh:/home/build/immortalwrt/build.sh" \
+              -e PROFILE=$profile \
+              immortalwrt/imagebuilder:x86-64-openwrt-23.05.4 /bin/sh /home/build/immortalwrt/build.sh
+          done
+
+      - name: Locate squashfs firmware files
+        id: locate_files
+        run: |
+          firmware_files=$(find "${{ github.workspace }}/bin" -type f -name '*squashfs*.img.gz')
+          firmware_files=$(echo "$firmware_files" | tr '\n' ' ')
+          echo "Squashfs firmware files located:"
+          echo "$firmware_files"
+          echo "firmware_paths=$firmware_files" >> $GITHUB_ENV
+
+      - name: Package firmware files into a tar.gz
+        run: |
+          tar -czf firmware.tar.gz ${{ env.firmware_paths }}
+          echo "Firmware files packaged into firmware.tar.gz"
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: firmware.tar.gz
+          compression-level: 0
