@@ -47,6 +47,10 @@ jobs:
           firmware_files=$(echo "$firmware_files" | tr '\n' ' ')
           echo "Squashfs firmware files located: $firmware_files"
           echo "firmware_paths=$firmware_files" >> $GITHUB_ENV
+          
+          # 提取文件名并设置为环境变量
+          firmware_name=$(basename "${{ env.firmware_paths }}")
+          echo "firmware_name=$firmware_name" >> $GITHUB_ENV
 
       - name: Upload firmware to GitHub Artifact
         uses: actions/upload-artifact@v4
@@ -59,21 +63,17 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: v1.0.0  # 你可以使用动态版本号或者手动指定版本
-          release_name: "Release v1.0.0"
+          tag_name: "v${{ github.run_number }}-${{ github.sha }}"  # 使用动态标签名
+          release_name: "Release v${{ github.run_number }}-${{ github.sha }}"
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload firmware to GitHub Release
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}  # 使用正确的上传 URL
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ env.firmware_paths }}  # 传递固件文件路径
           asset_name: ${{ env.firmware_name }}  # 使用提取的文件名
-          asset_content_type: application/gzip  # 固件类型
-        env:
-          # 提取文件名
-          firmware_name=$(basename "${{ env.firmware_paths }}")
-          echo "firmware_name=$firmware_name" >> $GITHUB_ENV
+          asset_content_type: application/gzip
