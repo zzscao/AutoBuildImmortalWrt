@@ -19,6 +19,33 @@ jobs:
       - name: Set executable permissions
         run: chmod +x build.sh
 
+      - name: Get current version from version.txt
+        id: get_version
+        run: |
+          # 如果版本文件不存在，设置默认版本
+          if [ ! -f version.txt ]; then
+            echo "v1.0.0" > version.txt
+          fi
+          # 获取当前版本号并输出
+          version=$(cat version.txt)
+          echo "Current version: $version"
+          echo "::set-output name=version::$version"
+      
+      - name: Increment version
+        id: increment_version
+        run: |
+          # 解析当前版本号并自增
+          version=${{ steps.get_version.outputs.version }}
+          version_parts=(${version//./ })
+          patch=${version_parts[2]}
+          new_patch=$((patch + 1))
+          new_version="v${version_parts[0]}.${version_parts[1]}.$new_patch"
+          
+          # 更新 version.txt
+          echo $new_version > version.txt
+          echo "New version: $new_version"
+          echo "::set-output name=new_version::$new_version"
+
       - name: Setup Docker and Build
         run: |
           profiles="${{ github.event.inputs.profile }}"
@@ -49,7 +76,7 @@ jobs:
           echo "firmware_paths=$firmware_files" >> $GITHUB_ENV
           
           # 提取文件名并设置为环境变量
-          firmware_name=$(basename "${{ github.workspace }}/bin/targets/x86/64/immortalwrt-23.05.4-x86-64-generic-squashfs-combined-efi.img.gz")
+          firmware_name=$(basename "$firmware_files")
           echo "firmware_name=$firmware_name" >> $GITHUB_ENV
 
       - name: Upload firmware to GitHub Artifact
@@ -63,8 +90,8 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: "v${{ github.run_number }}-${{ github.sha }}"  # 使用动态标签名
-          release_name: "Release v${{ github.run_number }}-${{ github.sha }}"
+          tag_name: ${{ steps.increment_version.outputs.new_version }}  # 使用自增版本号
+          release_name: "${{ github.event.inputs.profile }} Build $(date +'%Y-%m-%d %H:%M')"  # 使用时间戳作为 release 名称
           draft: false
           prerelease: false
         env:
@@ -77,3 +104,5 @@ jobs:
           asset_path: ${{ env.firmware_paths }}  # 传递固件文件路径
           asset_name: ${{ env.firmware_name }}  # 使用提取的文件名
           asset_content_type: application/gzip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
