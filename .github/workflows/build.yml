@@ -39,8 +39,8 @@ jobs:
           version_parts=(${version//./ })
           patch=${version_parts[2]}
           new_patch=$((patch + 1))
-          new_version="v${version_parts[0]}.${version_parts[1]}.$new_patch"
-          
+          new_version="v${version_parts[1]}.${new_patch}"  # 保证版本号是 vX.X.X 格式，避免重复的 v
+
           # 更新 version.txt
           echo $new_version > version.txt
           echo "New version: $new_version"
@@ -86,12 +86,20 @@ jobs:
           path: ${{ env.firmware_paths }}
           compression-level: 0
 
+      - name: Set release date
+        id: set_release_date
+        run: |
+          # 获取当前时间并设置为 RELEASE_DATE 环境变量
+          release_date=$(date +'%Y-%m-%d %H:%M')
+          echo "Release date: $release_date"
+          echo "::set-output name=release_date::$release_date"
+          
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
         with:
           tag_name: ${{ steps.increment_version.outputs.new_version }}  # 使用自增版本号
-          release_name: "${{ github.event.inputs.profile }} Build $(date +'%Y-%m-%d %H:%M')"  # 使用时间戳作为 release 名称
+          release_name: "${{ steps.set_release_date.outputs.release_date }} Build"  # 使用时间戳作为 release 名称
           draft: false
           prerelease: false
         env:
