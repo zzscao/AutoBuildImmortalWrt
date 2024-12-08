@@ -49,7 +49,9 @@ jobs:
 
       - name: Package firmware files into a tar.gz
         run: |
-          tar -czf firmware.tar.gz ${{ env.firmware_paths }}
+          mkdir -p /tmp/firmware
+          cp ${{ env.firmware_paths }} /tmp/firmware/
+          tar -czf firmware.tar.gz -C /tmp/firmware .
           echo "Firmware files packaged into firmware.tar.gz"
 
       - name: Upload firmware
