@@ -1,0 +1,94 @@
+name: build-x86-64-immortalwrt-24.10
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: '请输入要编译固件大小 单位(MB)'
+        required: true
+        default: '1024'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set executable permissions
+        run: chmod +x ${{ github.workspace }}/x86-64/build.sh
+
+      - name: Setup Docker and Build
+        run: |
+          profiles="${{ github.event.inputs.profile }}"
+          
+          IFS=',' read -r -a profile_array <<< "$profiles"
+          
+          for profile in "${profile_array[@]}"; do
+            echo "Building for profile: $profile"
+            
+            docker run --rm -i \
+              --user root \
+              -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
+              -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
+              -v "${{ github.workspace }}/x86-64/imm.config:/home/build/immortalwrt/.config" \
+              -v "${{ github.workspace }}/x86-64/build.sh:/home/build/immortalwrt/build.sh" \
+              -e PROFILE=$profile \
+              immortalwrt/imagebuilder:x86-64-openwrt-24.10 /bin/bash /home/build/immortalwrt/build.sh
+          done
+
+      - name: Locate squashfs firmware files
+        id: locate_files
+        run: |
+          # 查找符合条件的固件文件
+          firmware_files=$(find "${{ github.workspace }}/bin" -type f -name '*squashfs-combined*.img.gz')
+          # 格式化路径，以避免多余的换行或空格
+          firmware_files=$(echo "$firmware_files" | tr '\n' ' ')
+          echo "Squashfs firmware files located: $firmware_files"
+          echo "FIRMWARE_PATHS=$firmware_files" >> $GITHUB_ENV
+          
+          # 提取文件名并设置为环境变量
+          firmware_name=$(basename "$firmware_files")
+          echo "FIRMWARE_NAME=$firmware_name" >> $GITHUB_ENV
+
+      - name: Upload firmware to GitHub Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: ${{ env.FIRMWARE_PATHS }}
+          compression-level: 0
+
+      - name: Set release date and tag name
+        id: set_release_info
+        run: |
+          # 设置北京时间
+          TZ="Asia/Shanghai" date
+          release_date=$(TZ="Asia/Shanghai" date +'%Y-%m-%d %H:%M')
+          tag_name=$(TZ="Asia/Shanghai" date +'%Y%m%d%H%M')
+          echo "Release date: $release_date"
+          echo "Release tag name: $tag_name"
+          echo "RELEASE_DATE=$release_date" >> $GITHUB_ENV
+          echo "TAG_NAME=$tag_name" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: ncipollo/release-action@v1.14.0  # 使用 ncipollo/release-action 创建发布
+        with:
+          tag: ${{ env.TAG_NAME }}  # 使用时间戳作为 tag 名称
+          name: "${{ env.RELEASE_DATE }} Build"  # 使用时间戳作为 release 名称
+          draft: false
+          prerelease: false
+          generateReleaseNotes: false
+          makeLatest: true  # 设置为 true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload firmware to GitHub Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.FIRMWARE_PATHS }}  # 传递固件文件路径
+          asset_name: ${{ env.FIRMWARE_NAME }}  # 使用提取的文件名
+          asset_content_type: application/gzip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
