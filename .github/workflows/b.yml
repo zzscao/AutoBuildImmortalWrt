@@ -1,0 +1,105 @@
+name: b
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: '手动输入的多个 profile，并按逗号分隔'
+        required: true
+        default: 'friendlyarm_nanopi-r3s,radxa_zero-3e'
+      rootfs_partsize:
+        description: '设置根文件系统分区大小 (MB)'
+        required: true
+        default: '1024'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set executable permissions
+        run: chmod +x ${{ github.workspace }}/rockchip/build.sh
+
+      - name: Setup Docker and Build
+        run: |
+          profiles="${{ github.event.inputs.profile }}"
+          rootfs_partsize="${{ github.event.inputs.rootfs_partsize }}"
+          
+          IFS=',' read -r -a profile_array <<< "$profiles"
+          
+          for profile in "${profile_array[@]}"; do
+            echo "Building for profile: $profile"
+            
+            docker run --rm -i \
+              --user root \
+              -v "${{ github.workspace }}/bin:/home/build/immortalwrt/bin" \
+              -v "${{ github.workspace }}/files:/home/build/immortalwrt/files" \
+              -v "${{ github.workspace }}/rockchip/build.sh:/home/build/immortalwrt/build.sh" \
+              -e PROFILE=$profile \
+              -e ROOTFS_PARTSIZE=$rootfs_partsize \
+              immortalwrt/imagebuilder:rockchip-armv8-openwrt-24.10 /bin/bash /home/build/immortalwrt/build.sh
+          done
+
+      - name: Locate squashfs firmware files
+        id: locate_files
+        run: |
+          # 查找符合条件的固件文件
+          firmware_files=$(find "${{ github.workspace }}/bin" -type f -name '*squashfs*.img.gz')
+          
+          # 如果有多个固件文件，按空格分割路径并保存为环境变量
+          firmware_files_array=($firmware_files)
+
+          # 输出找到的固件文件路径
+          echo "Found firmware files: ${firmware_files}"
+
+          # 将所有固件文件路径合并为一个tar包
+          tar_file="firmware_files.tar.gz"
+          tar -czf $tar_file "${firmware_files_array[@]}"
+          
+          # 将tar包路径设置为环境变量
+          echo "TAR_FILE=$tar_file" >> $GITHUB_ENV
+
+      - name: Set release date and tag name
+        id: set_release_info
+        run: |
+          # 设置北京时间
+          TZ="Asia/Shanghai" date
+          release_date=$(TZ="Asia/Shanghai" date +'%Y-%m-%d %H:%M')
+          tag_name=$(TZ="Asia/Shanghai" date +'%Y%m%d%H%M')
+          echo "Release date: $release_date"
+          echo "Release tag name: $tag_name"
+          echo "RELEASE_DATE=$release_date" >> $GITHUB_ENV
+          echo "TAG_NAME=$tag_name" >> $GITHUB_ENV
+
+      - name: Fetch and append info.md content to release body
+        id: fetch_info
+        run: |
+          info_md_content=$(curl -s https://raw.githubusercontent.com/wukongdaily/AutoBuild/master/info.md)
+          echo "Fetched content from info.md: $info_md_content"
+          echo "INFO_MD_CONTENT=$info_md_content" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: ncipollo/release-action@v1.14.0
+        with:
+          tag: ${{ env.TAG_NAME }}
+          name: "${{ env.RELEASE_DATE }} Build"
+          body: "${{ env.INFO_MD_CONTENT }}"
+          draft: false
+          prerelease: false
+          generateReleaseNotes: false
+          makeLatest: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload compressed firmware tarball to GitHub Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.TAR_FILE }}
+          asset_name: firmware_files.tar.gz
+          asset_content_type: application/gzip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
