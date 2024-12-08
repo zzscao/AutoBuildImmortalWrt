@@ -41,7 +41,7 @@ jobs:
       - name: Locate squashfs firmware files
         id: locate_files
         run: |
-          firmware_files=$(find "${{ github.workspace }}/bin" -type f -name '*squashfs*.img.gz')
+          firmware_files=$(find "${{ github.workspace }}/bin" -type f -name '*squashfs-combined*.img.gz')
           firmware_files=$(echo "$firmware_files" | tr '\n' ' ')
           echo "Squashfs firmware files located:"
           echo "$firmware_files"
