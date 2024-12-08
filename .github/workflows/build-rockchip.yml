@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       profile:
-        description: '请输入要编译固件大小 单位(MB)'
+        description: '手动输入的多个 profile，并按逗号分隔'
         required: true
-        default: '512'
+        default: 'friendlyarm_nanopi-r3s,radxa_zero-3e'
       rootfs_partsize:
         description: '设置根文件系统分区大小 (MB)'
         required: true
-        default: '512'
+        default: '1024'
 
 jobs:
   build:
