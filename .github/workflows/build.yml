@@ -73,7 +73,7 @@ jobs:
           
       - name: Create GitHub Release
         id: create_release
-        uses: actions/create-release@v1.4.0  # 使用更新的版本
+        uses: ncipollo/release-action@v1.14.0
         with:
           tag_name: ${{ env.TAG_NAME }}  # 使用时间戳作为 tag 名称
           release_name: "${{ env.RELEASE_DATE }} Build"  # 使用时间戳作为 release 名称
