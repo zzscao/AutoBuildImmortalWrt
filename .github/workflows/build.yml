@@ -83,7 +83,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload firmware to GitHub Release
-        uses: actions/upload-release-asset@v1.1.0  # 使用更新的版本
+        uses: tanyagray/action-upload-release-asset@v1.1.3
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ env.FIRMWARE_PATHS }}  # 传递固件文件路径
