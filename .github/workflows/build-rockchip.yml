@@ -47,7 +47,7 @@ jobs:
         id: locate_files
         run: |
           # 查找符合条件的固件文件
-          firmware_files=$(find "${{ github.workspace }}/bin" -type f -name '*squashfs-combined*.img.gz')
+          firmware_files=$(find "${{ github.workspace }}/bin" -type f -name '*squashfs*.img.gz')
           # 格式化路径，以避免多余的换行或空格
           firmware_files=$(echo "$firmware_files" | tr '\n' ' ')
           echo "Squashfs firmware files located: $firmware_files"
