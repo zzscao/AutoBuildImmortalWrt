@@ -73,7 +73,7 @@ jobs:
           
       - name: Create GitHub Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: actions/create-release@v1.4.0  # 使用更新的版本
         with:
           tag_name: ${{ env.TAG_NAME }}  # 使用时间戳作为 tag 名称
           release_name: "${{ env.RELEASE_DATE }} Build"  # 使用时间戳作为 release 名称
@@ -83,7 +83,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload firmware to GitHub Release
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v1.1.0  # 使用更新的版本
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ env.FIRMWARE_PATHS }}  # 传递固件文件路径
