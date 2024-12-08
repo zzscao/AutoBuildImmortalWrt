@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       profile:
-        description: '手动输入的多个 profile，并按逗号分隔'
+        description: '请输入要编译固件大小 单位(KB)'
         required: true
-        default: 'generic'
+        default: '1024'
 
 jobs:
   build:
