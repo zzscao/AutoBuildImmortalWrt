@@ -1,8 +1,8 @@
 #!/bin/bash
-# 获取 PROFILE 环境变量
+# yml 传入的路由器型号 PROFILE
 echo "Building for profile: $PROFILE"
-# 获取 rootfs_partsize 环境变量
-echo "Building for rootfs_partsize: $rootfs_partsize"
+# yml 传入的固件大小 ROOTFS_PARTSIZE
+echo "Building for ROOTFS_PARTSIZE: $ROOTFS_PARTSIZE"
 
 
 
@@ -32,7 +32,7 @@ PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Building image with the following packages:"
 echo "$PACKAGES"
 
-make image PROFILE=$PROFILE PACKAGES="$PACKAGES" FILES="/home/build/immortalwrt/files" ROOTFS_PARTSIZE=$rootfs_partsize
+make image PROFILE=$PROFILE PACKAGES="$PACKAGES" FILES="/home/build/immortalwrt/files" ROOTFS_PARTSIZE=$ROOTFS_PARTSIZE
 
 if [ $? -ne 0 ]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Error: Build failed!"
