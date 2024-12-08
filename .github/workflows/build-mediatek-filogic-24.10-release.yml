@@ -41,7 +41,7 @@ jobs:
         id: locate_files
         run: |
           # 查找符合条件的固件文件
-          firmware_files=$(find "${{ github.workspace }}/bin" -type f -name '*squashfs*.img.gz')
+          firmware_files=$(find "${{ github.workspace }}/bin" -type f -name '*squashfs*')
           
           # 如果有多个固件文件，按空格分割路径并保存为环境变量
           firmware_files_array=($firmware_files)
