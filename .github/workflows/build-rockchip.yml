@@ -10,7 +10,7 @@ on:
       rootfs_partsize:
         description: '设置根文件系统分区大小 (MB)'
         required: true
-        default: '512'
+        default: '1024'
 
 jobs:
   build:
