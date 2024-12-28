@@ -52,43 +52,26 @@ jobs:
           firmware_name=$(basename "$firmware_files")
           echo "FIRMWARE_NAME=$firmware_name" >> $GITHUB_ENV
 
-      - name: Upload firmware to GitHub Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: firmware
-          path: ${{ env.FIRMWARE_PATHS }}
-          compression-level: 0
-
-      - name: Set release date and tag name
-        id: set_release_info
-        run: |
-          # 设置北京时间
-          TZ="Asia/Shanghai" date
-          release_date=$(TZ="Asia/Shanghai" date +'%Y-%m-%d %H:%M')
-          tag_name=$(TZ="Asia/Shanghai" date +'%Y%m%d%H%M')
-          echo "Release date: $release_date"
-          echo "Release tag name: $tag_name"
-          echo "RELEASE_DATE=$release_date" >> $GITHUB_ENV
-          echo "TAG_NAME=$tag_name" >> $GITHUB_ENV
-
       - name: Create GitHub Release
-        id: create_release
-        uses: ncipollo/release-action@v1.14.0  # 使用 ncipollo/release-action 创建发布
+        uses: softprops/action-gh-release@master
         with:
-          tag: ${{ env.TAG_NAME }}  # 使用时间戳作为 tag 名称
-          name: "${{ env.RELEASE_DATE }} Build"  # 使用时间戳作为 release 名称
+          tag_name: DockerTarBuilder
+          name: ${{ env.RELEASE_NAME }}
+          body: |
+            ![GitHub Release](https://img.shields.io/github/v/release/wukongdaily/AutoBuild?style=for-the-badge&logoSize=amg&labelColor=%23FFBF00&color=%2300C598)
+            > Automatically generated release immortalWrt for x86-64
+           
           draft: false
           prerelease: false
-          generateReleaseNotes: false
-          makeLatest: true  # 设置为 true
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload firmware to GitHub Release
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.FIRMWARE_PATHS }}  # 传递固件文件路径
-          asset_name: ${{ env.FIRMWARE_NAME }}  # 使用提取的文件名
-          asset_content_type: application/gzip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Docker images as release assets
+        uses: softprops/action-gh-release@v2.1.0
+        with:
+          tag_name: Autobuild
+          files: ${{ github.workspace }}/*.img.gz
+          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
