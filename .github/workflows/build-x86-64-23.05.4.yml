@@ -38,29 +38,13 @@ jobs:
               immortalwrt/imagebuilder:x86-64-openwrt-23.05.4 /bin/bash /home/build/immortalwrt/build.sh
           done
 
-      - name: Find squashfs firmware file
-        id: locate_files
-        run: |
-          # 查找符合条件的固件文件
-          firmware_files=$(find "${{ github.workspace }}/bin" -type f -name '*squashfs-combined*.img.gz')
-          # 格式化路径，以避免多余的换行或空格
-          firmware_files=$(echo "$firmware_files" | tr '\n' ' ')
-          echo "Squashfs firmware files located: $firmware_files"
-          echo "FIRMWARE_PATHS=$firmware_files" >> $GITHUB_ENV
-          
-          # 提取文件名并设置为环境变量
-          firmware_name=$(basename "$firmware_files")
-          echo "FIRMWARE_NAME=$firmware_name" >> $GITHUB_ENV
 
       - name: Create GitHub Release Info
         uses: softprops/action-gh-release@v2.1.0
         with:
           tag_name: Autobuild
           name: ImmortWrt-x86-64-efi
-          body: |
-            ![GitHub Release](https://img.shields.io/github/v/release/wukongdaily/AutoBuild?style=for-the-badge&logoSize=amg&labelColor=%23FFBF00&color=%2300C598)
-            > Automatically generated release immortalWrt for x86-64
-           
+          body_path: ${{ github.workspace }}/info.md
           draft: false
           prerelease: false
         env:
