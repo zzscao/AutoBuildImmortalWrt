@@ -4,10 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       profile:
-        description: '手动输入的多个 profile，并按逗号分隔'
-        required: true
-        default: 'friendlyarm_nanopi-r2s'
-        options:
+        description: |
+          输入 profile（用逗号分隔的多个值），可选值如下：
           - ariaboard_photonicat
           - armsom_sige3
           - armsom_sige7
@@ -50,7 +48,11 @@ on:
           - xunlong_orangepi_5
           - xunlong_orangepi_5_plus
           - xunlong_orangepi_r1_plus
-          - xunlong_orangepi_r1_plus_lts   
+          - xunlong_orangepi_r1_plus_lts  
+        
+        required: true
+        default: 'friendlyarm_nanopi-r2s'
+        
           
       rootfs_partsize:
         description: '设置根文件系统分区大小 (MB)'
