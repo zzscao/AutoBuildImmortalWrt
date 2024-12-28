@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout code
@@ -19,7 +19,7 @@ jobs:
       - name: Set executable permissions
         run: chmod +x ${{ github.workspace }}/x86-64/build.sh
 
-      - name: Setup Docker and Build
+      - name: Build ImmortalWrt-x86-64-eif
         run: |
           profiles="${{ github.event.inputs.profile }}"
           
@@ -38,7 +38,7 @@ jobs:
               immortalwrt/imagebuilder:x86-64-openwrt-23.05.4 /bin/bash /home/build/immortalwrt/build.sh
           done
 
-      - name: Locate squashfs firmware files
+      - name: Find squashfs firmware file
         id: locate_files
         run: |
           # 查找符合条件的固件文件
@@ -52,11 +52,11 @@ jobs:
           firmware_name=$(basename "$firmware_files")
           echo "FIRMWARE_NAME=$firmware_name" >> $GITHUB_ENV
 
-      - name: Create GitHub Release
+      - name: Create GitHub Release Info
         uses: softprops/action-gh-release@master
         with:
-          tag_name: DockerTarBuilder
-          name: ${{ env.RELEASE_NAME }}
+          tag_name: Autobuild
+          name: ImmortWrt-x86-64-efi
           body: |
             ![GitHub Release](https://img.shields.io/github/v/release/wukongdaily/AutoBuild?style=for-the-badge&logoSize=amg&labelColor=%23FFBF00&color=%2300C598)
             > Automatically generated release immortalWrt for x86-64
@@ -66,7 +66,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Docker images as release assets
+      - name: Upload ImmortWrt as release assets
         uses: softprops/action-gh-release@v2.1.0
         with:
           tag_name: Autobuild
