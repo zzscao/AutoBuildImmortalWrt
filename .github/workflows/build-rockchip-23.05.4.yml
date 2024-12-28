@@ -59,7 +59,7 @@ jobs:
         uses: softprops/action-gh-release@v2.1.0
         with:
           tag_name: Autobuild
-          files: ${{ github.workspace }}/bin/targets/x86/64/*.img.gz
+          files: ${{ github.workspace }}/bin/targets/rockchip/armv8/*.img.gz
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
