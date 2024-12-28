@@ -6,7 +6,52 @@ on:
       profile:
         description: '手动输入的多个 profile，并按逗号分隔'
         required: true
-        default: 'friendlyarm_nanopi-r3s'
+        default: 'friendlyarm_nanopi-r2s'
+        options:
+          - ariaboard_photonicat
+          - armsom_sige3
+          - armsom_sige7
+          - cyber_cyber3588_aib
+          - ezpro_mrkaio_m68s
+          - firefly_roc_rk3328_cc
+          - firefly_roc_rk3568_pc
+          - friendlyarm_nanopc_t4
+          - friendlyarm_nanopc_t6
+          - friendlyarm_nanopi_r2c
+          - friendlyarm_nanopi_r2c_plus
+          - friendlyarm_nanopi_r2s
+          - friendlyarm_nanopi_r3s
+          - friendlyarm_nanopi_r4s
+          - friendlyarm_nanopi_r4se
+          - friendlyarm_nanopi_r4s_enterprise
+          - friendlyarm_nanopi_r5c
+          - friendlyarm_nanopi_r5s
+          - friendlyarm_nanopi_r6c
+          - friendlyarm_nanopi_r6s
+          - huake_guangmiao_g4c
+          - lunzn_fastrhino_r66s
+          - lunzn_fastrhino_r68s
+          - lyt_t68m
+          - pine64_rock64
+          - pine64_rockpro64
+          - radxa_cm3_io
+          - radxa_e25
+          - radxa_rock_3a
+          - radxa_rock_3b
+          - radxa_rock_3c
+          - radxa_rock_5a
+          - radxa_rock_5b
+          - radxa_rock_pi_4a
+          - radxa_rock_pi_e
+          - radxa_rock_pi_s
+          - radxa_zero_3e
+          - radxa_zero_3w
+          - sinovoip_bpi_r2_pro
+          - xunlong_orangepi_5
+          - xunlong_orangepi_5_plus
+          - xunlong_orangepi_r1_plus
+          - xunlong_orangepi_r1_plus_lts   
+          
       rootfs_partsize:
         description: '设置根文件系统分区大小 (MB)'
         required: true
