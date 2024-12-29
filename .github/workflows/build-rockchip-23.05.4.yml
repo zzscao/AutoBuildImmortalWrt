@@ -6,7 +6,7 @@ on:
       profile:
         description: |
           输入 软路由型号（用逗号分隔的多个值），可选值如下：
-           ariaboard_photonicat,
+          ,ariaboard_photonicat
           ,armsom_sige3
           ,armsom_sige7
           ,cyber_cyber3588-aib
@@ -52,7 +52,7 @@ on:
         required: true
         default: 'friendlyarm_nanopi-r2s'
       rootfs_partsize:
-        description: '设置根文件系统分区大小 (MB)'
+        description: '设置软件包大小 单位(MB)'
         required: true
         default: '1024'
 
