@@ -5,55 +5,52 @@ on:
     inputs:
       profile:
         description: |
-          输入 profile（用逗号分隔的多个值），可选值如下：
+          输入 软路由型号（用逗号分隔的多个值），可选值如下：
           - ariaboard_photonicat
           - armsom_sige3
           - armsom_sige7
-          - cyber_cyber3588_aib
-          - ezpro_mrkaio_m68s
-          - firefly_roc_rk3328_cc
-          - firefly_roc_rk3568_pc
-          - friendlyarm_nanopc_t4
-          - friendlyarm_nanopc_t6
-          - friendlyarm_nanopi_r2c
-          - friendlyarm_nanopi_r2c_plus
-          - friendlyarm_nanopi_r2s
-          - friendlyarm_nanopi_r3s
-          - friendlyarm_nanopi_r4s
-          - friendlyarm_nanopi_r4se
-          - friendlyarm_nanopi_r4s_enterprise
-          - friendlyarm_nanopi_r5c
-          - friendlyarm_nanopi_r5s
-          - friendlyarm_nanopi_r6c
-          - friendlyarm_nanopi_r6s
-          - huake_guangmiao_g4c
-          - lunzn_fastrhino_r66s
-          - lunzn_fastrhino_r68s
+          - cyber_cyber3588-aib
+          - ezpro_mrkaio-m68s
+          - firefly_roc-rk3328-cc
+          - firefly_roc-rk3568-pc
+          - friendlyarm_nanopc-t4
+          - friendlyarm_nanopc-t6
+          - friendlyarm_nanopi-r2c
+          - friendlyarm_nanopi-r2c-plus
+          - friendlyarm_nanopi-r2s
+          - friendlyarm_nanopi-r3s
+          - friendlyarm_nanopi-r4s
+          - friendlyarm_nanopi-r4se
+          - friendlyarm_nanopi-r4s-enterprise
+          - friendlyarm_nanopi-r5c
+          - friendlyarm_nanopi-r5s
+          - friendlyarm_nanopi-r6c
+          - friendlyarm_nanopi-r6s
+          - huake_guangmiao-g4c
+          - lunzn_fastrhino-r66s
+          - lunzn_fastrhino-r68s
           - lyt_t68m
           - pine64_rock64
           - pine64_rockpro64
           - radxa_cm3_io
           - radxa_e25
-          - radxa_rock_3a
-          - radxa_rock_3b
-          - radxa_rock_3c
-          - radxa_rock_5a
-          - radxa_rock_5b
-          - radxa_rock_pi_4a
-          - radxa_rock_pi_e
-          - radxa_rock_pi_s
-          - radxa_zero_3e
-          - radxa_zero_3w
-          - sinovoip_bpi_r2_pro
-          - xunlong_orangepi_5
-          - xunlong_orangepi_5_plus
-          - xunlong_orangepi_r1_plus
-          - xunlong_orangepi_r1_plus_lts  
-        
+          - radxa_rock-3a
+          - radxa_rock-3b
+          - radxa_rock-3c
+          - radxa_rock-5a
+          - radxa_rock-5b
+          - radxa_rock-pi-4a
+          - radxa_rock-pi-e
+          - radxa_rock-pi-s
+          - radxa_zero-3e
+          - radxa_zero-3w
+          - sinovoip_bpi-r2-pro
+          - xunlong_orangepi-5
+          - xunlong_orangepi-5-plus
+          - xunlong_orangepi-r1-plus
+          - xunlong_orangepi-r1-plus-lts  
         required: true
         default: 'friendlyarm_nanopi-r2s'
-        
-          
       rootfs_partsize:
         description: '设置根文件系统分区大小 (MB)'
         required: true
