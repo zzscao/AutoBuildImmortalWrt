@@ -13,6 +13,7 @@ echo "$(date '+%Y-%m-%d %H:%M:%S') - Starting build process..."
 # 定义所需安装的包列表
 PACKAGES=""
 PACKAGES="$PACKAGES curl"
+PACKAGES="$PACKAGES luci-i18n-diskman-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-package-manager-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-firewall-zh-cn"
 PACKAGES="$PACKAGES luci-i18n-filebrowser-zh-cn"
