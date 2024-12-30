@@ -67,7 +67,7 @@ jobs:
       - name: Set executable permissions
         run: chmod +x ${{ github.workspace }}/rockchip/build.sh
 
-      - name: Setup Docker and Build
+      - name: Building Rockchip ImmortalWrt
         run: |
           profiles="${{ github.event.inputs.profile }}"
           rootfs_partsize="${{ github.event.inputs.rootfs_partsize }}"
