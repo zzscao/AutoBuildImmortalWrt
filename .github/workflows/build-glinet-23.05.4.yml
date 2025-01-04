@@ -54,6 +54,15 @@ jobs:
               -e INCLUDE_DOCKER=$include_docker \
               immortalwrt/imagebuilder:mediatek-filogic-openwrt-23.05.4 /bin/bash /home/build/immortalwrt/build.sh
           done
+
+      - name: Generate Firmware SHA-256
+        run: |
+          cp ${{ github.workspace }}/bin/targets/mediatek/filogic/*.bin ${{ github.workspace }}
+          for file in *.bin; do
+            sha256sum "$file" > "$file.sha256"
+            sha256sum -c "$file.sha256"
+          done
+
       - name: Create info
         run: |
           if [ "${{ github.event.inputs.include_docker }}" == "yes" ]; then
@@ -78,7 +87,9 @@ jobs:
         uses: softprops/action-gh-release@v2.1.0
         with:
           tag_name: Autobuild-GL-iNet
-          files: ${{ github.workspace }}/bin/targets/mediatek/filogic/*.bin
+          files: |
+            ${{ github.workspace }}/*.bin
+            ${{ github.workspace }}/*.sha256
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
