@@ -44,7 +44,7 @@ jobs:
         run: |
           chmod +x ${{ github.workspace }}/sunxi-cortexa53/build.sh
 
-      - name: Build Gl-iNet ImmpotalWrt 23.05.4
+      - name: Build sunxi-cortexa53 ImmpotalWrt 23.05.4
         run: |
           profiles="${{ github.event.inputs.profile }}"
           include_docker="${{ github.event.inputs.include_docker }}"
