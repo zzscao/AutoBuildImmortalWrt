@@ -1,4 +1,4 @@
-name: build-gl-inet-23.05.4 ImmpotalWrt
+name: build-gl-inet-23.05.4 ImmortalWrt
 
 on:
   workflow_dispatch:
@@ -69,7 +69,7 @@ jobs:
           echo "PPPOE_ACCOUNT=$PPPOE_ACCOUNT"
           echo "PPPOE_PASSWORD=$PPPOE_PASSWORD"
 
-      - name: Build Gl-iNet ImmpotalWrt 23.05.4
+      - name: Build Gl-iNet ImmortalWrt 23.05.4
         run: |
           profiles="${{ github.event.inputs.profile }}"
           include_docker="${{ github.event.inputs.include_docker }}"
@@ -124,7 +124,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload ImmortWrt as release assets
+      - name: Upload ImmortalWrt as release assets
         uses: softprops/action-gh-release@v2.1.0
         with:
           tag_name: Autobuild-GL-iNet
